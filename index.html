@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ML Challenge - Descubre el Machine Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .screen {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .example-box {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .problem-box {
+            background: #fff3e0;
+            border-left: 5px solid #ffa726;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .challenge-box {
+            background: #f3e5f5;
+            border-left: 5px solid #9c27b0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .timer.warning {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: #f44336;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .option {
+            background: white;
+            border: 3px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .feedback {
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .feedback.correct {
+            background: #e8f5e8;
+            border-left: 5px solid #4caf50;
+            color: #2e7d2e;
+        }
+
+        .feedback.incorrect {
+            background: #ffeaea;
+            border-left: 5px solid #f44336;
+            color: #c62828;
+        }
+
+        .ranking {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .ranking h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .ranking-item.me {
+            border-left: 5px solid #667eea;
+            background: #f0f4ff;
+        }
+
+        .medal {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .screen {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .timer {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+
+            .option {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de Bienvenida -->
+        <div class="screen active" id="welcome">
+            <div class="header">
+                <h1>🚀 ML Challenge</h1>
+                <p>¡Descubre el Machine Learning de forma divertida!</p>
+            </div>
+            
+            <div class="emoji">🎯🤖💡</div>
+            
+            <p style="font-size: 1.2em; line-height: 1.6; margin: 30px 0;">
+                ¿Listo para un desafío épico? Te llevaremos por un viaje increíble a través de los 4 tipos principales de Machine Learning usando ejemplos súper cotidianos. 
+            </p>
+            
+            <div class="input-group">
+                <label for="playerName">¿Cómo te llamas, genio? 😎</label>
+                <input type="text" id="playerName" placeholder="Tu nombre aquí..." maxlength="20">
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn" onclick="startGame()" id="startBtn" disabled>¡Empezar la Aventura! 🎮</button>
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer" id="timer" style="display: none;">
+            ⏰ <span id="timeLeft">3:00</span>
+        </div>
+
+        <!-- Nivel 1: Aprendizaje Supervisado -->
+        <div class="screen" id="level1">
+            <div class="level-badge">Nivel 1: Aprendizaje Supervisado 📚</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%;"></div>
+            </div>
+            
+            <h2>🎯 ¿Qué es el Aprendizaje Supervisado?</h2>
+            
+            <div class="example-box">
+                <h3>💡 Ejemplo Cotidiano</h3>
+                <p>Es como cuando le enseñas a tu hermano menor a reconocer si una foto de ropa que subes a tu tienda online va a venderse bien o no. Le muestras 1000 fotos: "Esta camiseta roja se vendió súper bien", "Esta falda no se vendió nada", "Este jean fue un hit". Después de ver muchos ejemplos CON las respuestas correctas, él aprende a predecir qué se va a vender. 🛍️</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>🤔 Situación Real</h3>
+                <p>Trabajas para una empresa de reclutamiento y quieres crear un sistema que automáticamente clasifique CVs como "Apto para entrevista" o "No apto" basándose en la experiencia, educación y habilidades.</p>
+            </div>
+
+            <div class="challenge-box">
+                <h3>⚡ ¡Tu Desafío!</h3>
+                <p><strong>¿Qué necesitas para entrenar este sistema de clasificación de CVs?</strong></p>
+            </div>
+
+            <div class="options" id="options1">
+                <div class="option" onclick="selectOption(1, 0)">
+                    Solo necesitas miles de CVs sin clasificar para que el sistema aprenda por sí solo
+                </div>
+                <div class="option" onclick="selectOption(1, 1)">
+                    Miles de CVs ya clasificados como "Apto" o "No apto" por reclutadores expertos
+                </div>
+                <div class="option" onclick="selectOption(1, 2)">
+                    Un algoritmo que invente sus propias reglas sobre qué hace a un CV bueno
+                </div>
+                <div class="option" onclick="selectOption(1, 3)">
+                    Solo la descripción del trabajo y nada más
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkAnswer(1)" id="checkBtn1" disabled>¡Revisar Respuesta! 🎯</button>
+            </div>
+
+            <div class="feedback" id="feedback1" style="display: none;"></div>
+        </div>
+
+        <!-- Nivel 2: Aprendizaje No Supervisado -->
+        <div class="screen" id="level2">
+            <div class="level-badge">Nivel 2: Aprendizaje No Supervisado 🔍</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            
+            <h2>🔍 ¿Qué es el Aprendizaje No Supervisado?</h2>
+            
+            <div class="example-box">
+                <h3>💡 Ejemplo Cotidiano</h3>
+                <p>Es como cuando miras tu página de Instagram de tu emprendimiento y te das cuenta de que tus seguidores se pueden agrupar en patrones: "Los que compran los lunes", "Los que solo ven stories pero no compran", "Los que compran productos caros", "Los millennials que aman los descuentos". No les pusiste etiquetas, pero el sistema encontró estos grupos por sí solo analizando su comportamiento. 📊</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>🤔 Situación Real</h3>
+                <p>Tienes una app de aprendizaje de idiomas con 50,000 usuarios. Quieres entender qué tipos de estudiantes diferentes tienes para crear cursos personalizados, pero no sabes de antemano cuántos tipos hay ni cómo definirlos.</p>
+            </div>
+
+            <div class="challenge-box">
+                <h3>⚡ ¡Tu Desafío!</h3>
+                <p><strong>¿Qué puede hacer el aprendizaje no supervisado con los datos de tus usuarios?</strong></p>
+            </div>
+
+            <div class="options" id="options2">
+                <div class="option" onclick="selectOption(2, 0)">
+                    Predecir exactamente qué curso va a tomar cada usuario mañana
+                </div>
+                <div class="option" onclick="selectOption(2, 1)">
+                    Descubrir grupos naturales como "estudiantes nocturnos intensivos", "casuales de fin de semana", "obsesivos de gramática"
+                </div>
+                <div class="option" onclick="selectOption(2, 2)">
+                    Clasificar usuarios como "principiante" o "avanzado" basado en ejemplos previos
+                </div>
+                <div class="option" onclick="selectOption(2, 3)">
+                    Generar contenido nuevo automáticamente para cada usuario
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkAnswer(2)" id="checkBtn2" disabled>¡Revisar Respuesta! 🎯</button>
+            </div>
+
+            <div class="feedback" id="feedback2" style="display: none;"></div>
+        </div>
+
+        <!-- Nivel 3: Aprendizaje por Refuerzo -->
+        <div class="screen" id="level3">
+            <div class="level-badge">Nivel 3: Aprendizaje por Refuerzo 🎮</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+            
+            <h2>🎮 ¿Qué es el Aprendizaje por Refuerzo?</h2>
+            
+            <div class="example-box">
+                <h3>💡 Ejemplo Cotidiano</h3>
+                <p>Es como cuando aprendes a negociar precios en un mercado. Al principio no sabes nada, pero cada vez que regateas obtienes una "recompensa" (buen precio) o un "castigo" (te dicen que no). Poco a poco aprendes: "Si empiezo ofreciendo 50% del precio inicial y sonrío, generalmente funciona", "Si soy muy agresivo, no me venden". Aprendes por ensayo y error con feedback inmediato. 💰</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>🤔 Situación Real</h3>
+                <p>Quieres crear un chatbot para tu tienda online que aprenda a hacer las mejores ofertas a cada cliente para maximizar las ventas. El bot debe aprender cuándo ofrecer descuentos, cuánto descuento dar, y cuándo no ofrecer nada.</p>
+            </div>
+
+            <div class="challenge-box">
+                <h3>⚡ ¡Tu Desafío!</h3>
+                <p><strong>¿Cómo aprende el chatbot a hacer mejores ofertas?</strong></p>
+            </div>
+
+            <div class="options" id="options3">
+                <div class="option" onclick="selectOption(3, 0)">
+                    Copiando exactamente lo que hacen los vendedores humanos más exitosos
+                </div>
+                <div class="option" onclick="selectOption(3, 1)">
+                    Analizando patrones en datos históricos de ventas sin interactuar
+                </div>
+                <div class="option" onclick="selectOption(3, 2)">
+                    Probando diferentes estrategias con clientes reales y ajustando basado en si venden más (+recompensa) o menos (-castigo)
+                </div>
+                <div class="option" onclick="selectOption(3, 3)">
+                    Siguiendo reglas fijas programadas sobre cuándo dar descuentos
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkAnswer(3)" id="checkBtn3" disabled>¡Revisar Respuesta! 🎯</button>
+            </div>
+
+            <div class="feedback" id="feedback3" style="display: none;"></div>
+        </div>
+
+        <!-- Nivel 4: Aprendizaje Autosupervisado -->
+        <div class="screen" id="level4">
+            <div class="level-badge">Nivel 4: Aprendizaje Autosupervisado 🧠</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%;"></div>
+            </div>
+            
+            <h2>🧠 ¿Qué es el Aprendizaje Autosupervisado?</h2>
+            
+            <div class="example-box">
+                <h3>💡 Ejemplo Cotidiano</h3>
+                <p>Es como cuando aprendes inglés leyendo millones de posts en redes sociales. Nadie te dice "esta palabra significa esto", pero al leer "I love pizza 🍕" y luego "Pizza is delicious", tu cerebro entiende que 'love' y 'delicious' están relacionados con cosas positivas. El sistema crea sus propias "etiquetas" tapando palabras y tratando de adivinarlas: "I ____ pizza" → "love".</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>🤔 Situación Real</h3>
+                <p>Quieres crear un generador de contenido para tu blog de emprendimiento que escriba posts increíbles. Tienes millones de artículos exitosos de internet, pero no tienes tiempo de etiquetar cada uno como "bueno" o "malo".</p>
+            </div>
+
+            <div class="challenge-box">
+                <h3>⚡ ¡Tu Desafío Final!</h3>
+                <p><strong>¿Cómo puede aprender el sistema a generar buen contenido sin etiquetas explícitas?</strong></p>
+            </div>
+
+            <div class="options" id="options4">
+                <div class="option" onclick="selectOption(4, 0)">
+                    Necesita que manualmente califiques cada artículo del 1 al 10 primero
+                </div>
+                <div class="option" onclick="selectOption(4, 1)">
+                    Aprende prediciendo la siguiente palabra/frase en millones de textos, aprendiendo patrones del lenguaje naturalmente
+                </div>
+                <div class="option" onclick="selectOption(4, 2)">
+                    Solo funciona si le das ejemplos de textos "buenos" vs "malos" previamente clasificados
+                </div>
+                <div class="option" onclick="selectOption(4, 3)">
+                    Encuentra grupos de artículos similares pero no genera contenido nuevo
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkAnswer(4)" id="checkBtn4" disabled>¡Revisar Respuesta! 🎯</button>
+            </div>
+
+            <div class="feedback" id="feedback4" style="display: none;"></div>
+        </div>
+
+        <!-- Pantalla Final -->
+        <div class="screen" id="final">
+            <div class="header">
+                <h1>🏆 ¡Misión Completada!</h1>
+                <p id="finalMessage"></p>
+            </div>
+            
+            <div class="ranking">
+                <h3>🥇 Ranking Final - Hall of Fame</h3>
+                <div id="rankingList"></div>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <div class="emoji">🎓✨🚀</div>
+                <p style="font-size: 1.3em; line-height: 1.6;">
+                    <strong>¡Ahora eres un experto en Machine Learning!</strong><br>
+                    Has dominado los 4 tipos principales y ya puedes aplicarlos en tu vida profesional.
+                </p>
+                
+                <button class="btn" onclick="restartGame()" style="margin-top: 30px;">
+                    🔄 Nueva Partida
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let playerName = '';
+        let score = 0;
+        let selectedAnswers = [null, null, null, null, null];
+        let timer = null;
+        let timeLeft = 180; // 3 minutos en segundos
+        let players = []; // Array para almacenar todos los jugadores
+
+        // Respuestas correctas para cada nivel (índice 0-3)
+        const correctAnswers = [1, 1, 2, 1];
+
+        // Feedback para respuestas correctas e incorrectas
+        const feedbackData = {
+            1: {
+                correct: "¡Exacto, crack! 🎉 El aprendizaje supervisado necesita datos de entrenamiento con las 'respuestas correctas' (etiquetas). Es como estudiar con un libro que tiene las soluciones al final. Sin esos ejemplos clasificados por expertos, el algoritmo no sabría qué buscar. ¡Sigues imparable! 💪",
+                incorrect: "¡Uy, casi! 😅 El aprendizaje supervisado es como tener un profesor: necesita ejemplos CON las respuestas correctas. La respuesta correcta es: 'Miles de CVs ya clasificados como Apto o No apto por reclutadores expertos'. Sin esos ejemplos etiquetados, el algoritmo no puede aprender qué características hacen a un buen candidato. ¡Pero hey, ya entiendes el concepto! 🚀"
+            },
+            2: {
+                correct: "¡Eres una máquina! 🔥 Exacto, el aprendizaje no supervisado es el detective de los datos. No le dices qué buscar, él solito encuentra patrones ocultos y agrupa usuarios con comportamientos similares. Es como descubrir tribus secretas en tu audiencia. ¡Vamos por el siguiente nivel! 🕵️‍♀️",
+                incorrect: "¡Casi lo tienes! 🤔 El aprendizaje no supervisado no predice ni clasifica con etiquetas previas. Su súper poder es descubrir grupos naturales que no sabías que existían. La respuesta correcta era: 'Descubrir grupos naturales como estudiantes nocturnos intensivos, casuales de fin de semana, etc.' ¡Es como encontrar tesoros escondidos en tus datos! 💎"
+            },
+            3: {
+                correct: "¡BOOM! 💥 Eres imparable. El aprendizaje por refuerzo es puro ensayo y error con consecuencias reales. Como un videojuego de la vida: pruebas, obtienes puntos (o los pierdes), y ajustas tu estrategia. El chatbot literalmente aprende vendiendo, no copiando. ¡Un nivel más y eres leyenda! 🎮",
+                incorrect: "¡Casi, pero no del todo! 😊 El aprendizaje por refuerzo es como aprender a montar bicicleta: tienes que caerte para mejorar. No copia ni sigue reglas fijas. La respuesta correcta era: 'Probando diferentes estrategias con clientes reales y ajustando basado en si venden más o menos'. ¡Es aprender haciendo, con recompensas y castigos reales! ⚡"
+            },
+            4: {
+                correct: "¡ERES EL/LA MÁXIMO/A CAMPEÓN/A! 🏆👑 Has dominado el más sofisticado: el aprendizaje autosupervisado. Es como aprender idiomas por inmersión total, el sistema se enseña a sí mismo rellenando espacios en blanco en millones de textos. ¡ChatGPT y compañía funcionan así! Oficialmente eres un genio del ML. 🧠✨",
+                incorrect: "¡Increíble esfuerzo hasta aquí! 🌟 El aprendizaje autosupervisado es el más tricky. No necesita etiquetas manuales, se crea sus propios ejercicios tapando palabras y aprendiendo a predecirlas. La respuesta correcta era: 'Aprende prediciendo la siguiente palabra/frase en millones de textos'. ¡Como un estudiante súper autodidacta! Pero llegaste hasta aquí, ¡eres genial! 🎓"
+            }
+        };
+
+        // Inicializar el juego
+        document.getElementById('playerName').addEventListener('input', function() {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = this.value.trim() === '';
+        });
+
+        function startGame() {
+            playerName = document.getElementById('playerName').value.trim();
+            if (playerName) {
+                showScreen('level1');
+                startTimer();
+                currentLevel = 1;
+            }
+        }
+
+        function showScreen(screenId) {
+            // Ocultar todas las pantallas
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            
+            // Mostrar la pantalla solicitada
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startTimer() {
+            timeLeft = 180; // 3 minutos
+            document.getElementById('timer').style.display = 'block';
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 60) {
+                    document.getElementById('timer').className = 'timer warning';
+                }
+                
+                if (timeLeft <= 30) {
+                    document.getElementById('timer').className = 'timer critical';
+                }
+                
+                if (timeLeft <= 0) {
+                    // Tiempo agotado
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timeLeft').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function timeUp() {
+            clearInterval(timer);
+            // Auto-seleccionar una respuesta incorrecta si no hay ninguna seleccionada
+            if (selectedAnswers[currentLevel] === null) {
+                selectedAnswers[currentLevel] = (correctAnswers[currentLevel - 1] + 1) % 4;
+                const options = document.querySelectorAll(`#options${currentLevel} .option`);
+                options[selectedAnswers[currentLevel]].classList.add('selected');
+            }
+            checkAnswer(currentLevel);
+        }
+
+        function selectOption(level, optionIndex) {
+            // Limpiar selecciones anteriores
+            const options = document.querySelectorAll(`#options${level} .option`);
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // Seleccionar la opción actual
+            options[optionIndex].classList.add('selected');
+            selectedAnswers[level] = optionIndex;
+            
+            // Habilitar botón de revisar
+            document.getElementById(`checkBtn${level}`).disabled = false;
+        }
+
+        function checkAnswer(level) {
+            clearInterval(timer);
+            
+            const selectedAnswer = selectedAnswers[level];
+            const correctAnswer = correctAnswers[level - 1];
+            const isCorrect = selectedAnswer === correctAnswer;
+            
+            // Mostrar respuestas correctas e incorrectas
+            const options = document.querySelectorAll(`#options${level} .option`);
+            options.forEach((option, index) => {
+                if (index === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (index === selectedAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Actualizar puntaje
+            if (isCorrect) {
+                score++;
+            }
+            
+            // Mostrar feedback
+            const feedback = document.getElementById(`feedback${level}`);
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = feedbackData[level][isCorrect ? 'correct' : 'incorrect'];
+            
+            // Deshabilitar opciones
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+            
+            // Cambiar botón para siguiente nivel
+            const checkBtn = document.getElementById(`checkBtn${level}`);
+            checkBtn.textContent = level === 4 ? '🏆 Ver Resultados' : '➡️ Siguiente Nivel';
+            checkBtn.onclick = () => nextLevel();
+        }
+
+        function nextLevel() {
+            if (currentLevel === 4) {
+                finishGame();
+            } else {
+                currentLevel++;
+                showScreen(`level${currentLevel}`);
+                startTimer();
+            }
+        }
+
+        function finishGame() {
+            // Agregar jugador al ranking
+            const player = {
+                name: playerName,
+                score: score,
+                timestamp: new Date()
+            };
+            
+            // Obtener jugadores existentes del almacenamiento de sesión
+            let existingPlayers = JSON.parse(sessionStorage.getItem('mlGamePlayers') || '[]');
+            existingPlayers.push(player);
+            
+            // Ordenar por puntaje (descendente) y luego por tiempo (ascendente)
+            existingPlayers.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score;
+                }
+                return new Date(a.timestamp) - new Date(b.timestamp);
+            });
+            
+            // Guardar en almacenamiento de sesión
+            sessionStorage.setItem('mlGamePlayers', JSON.stringify(existingPlayers));
+            
+            // Mostrar pantalla final
+            showScreen('final');
+            document.getElementById('timer').style.display = 'none';
+            
+            // Mensaje personalizado basado en el puntaje
+            let message = '';
+            if (score === 4) {
+                message = `¡${playerName}, eres un GENIO absoluto! 🧠✨ Perfecto 4/4`;
+            } else if (score === 3) {
+                message = `¡Excelente, ${playerName}! 🌟 Casi perfecto con ${score}/4`;
+            } else if (score === 2) {
+                message = `¡Bien hecho, ${playerName}! 👏 ${score}/4 - Vas por buen camino`;
+            } else {
+                message = `¡Gran esfuerzo, ${playerName}! 💪 ${score}/4 - Cada intento te hace más fuerte`;
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+            
+            // Mostrar ranking
+            displayRanking(existingPlayers);
+        }
+
+        function displayRanking(players) {
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
+            
+            const medals = ['🥇', '🥈', '🥉'];
+            
+            players.slice(0, 10).forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = `ranking-item ${player.name === playerName ? 'me' : ''}`;
+                
+                const medal = index < 3 ? medals[index] : `#${index + 1}`;
+                const timeAgo = getTimeAgo(player.timestamp);
+                
+                item.innerHTML = `
+                    <div>
+                        <span class="medal">${medal}</span>
+                        <strong>${player.name}</strong>
+                        ${player.name === playerName ? '(¡Eres tú!)' : ''}
+                    </div>
+                    <div>
+                        <span style="font-size: 1.2em; color: #667eea;">${player.score}/4</span>
+                        <br>
+                        <small>${timeAgo}</small>
+                    </div>
+                `;
+                
+                rankingList.appendChild(item);
+            });
+        }
+
+        function getTimeAgo(timestamp) {
+            const now = new Date();
+            const then = new Date(timestamp);
+            const diffMs = now - then;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) return 'Ahora mismo';
+            if (diffMins === 1) return 'Hace 1 minuto';
+            if (diffMins < 60) return `Hace ${diffMins} minutos`;
+            
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours === 1) return 'Hace 1 hora';
+            if (diffHours < 24) return `Hace ${diffHours} horas`;
+            
+            return 'Hace más de un día';
+        }
+
+        function restartGame() {
+            // Reiniciar variables
+            currentLevel = 0;
+            playerName = '';
+            score = 0;
+            selectedAnswers = [null, null, null, null, null];
+            timeLeft = 180;
+            
+            // Limpiar timer
+            if (timer) {
+                clearInterval(timer);
+            }
+            
+            // Limpiar formulario
+            document.getElementById('playerName').value = '';
+            document.getElementById('startBtn').disabled = true;
+            
+            // Limpiar todas las opciones seleccionadas y feedback
+            for (let i = 1; i <= 4; i++) {
+                const options = document.querySelectorAll(`#options${i} .option`);
+                options.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                    option.style.pointerEvents = 'auto';
+                });
+                
+                document.getElementById(`feedback${i}`).style.display = 'none';
+                
+                const checkBtn = document.getElementById(`checkBtn${i}`);
+                checkBtn.disabled = true;
+                checkBtn.textContent = '¡Revisar Respuesta! 🎯';
+                checkBtn.onclick = () => checkAnswer(i);
+            }
+            
+            // Volver a la pantalla de inicio
+            showScreen('welcome');
+            document.getElementById('timer').style.display = 'none';
+        }
+
+        // Prevenir que el usuario pueda hacer trampa con el inspector
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') || 
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Deshabilitar click derecho
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Manejar visibilidad de la página (pausar timer si se va)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && timer) {
+                clearInterval(timer);
+            } else if (!document.hidden && currentLevel > 0 && currentLevel <= 4) {
+                // Solo reiniciar el timer si estamos en un nivel activo
+                if (document.getElementById(`feedback${currentLevel}`).style.display === 'none') {
+                    startTimer();
+                }
+            }
+        });
+
+        // Mensaje de bienvenida en consola
+        console.log('🚀 ¡Bienvenido al ML Challenge! ¡Que disfrutes aprendiendo!');
+    </script>
+</body>
+</html>
